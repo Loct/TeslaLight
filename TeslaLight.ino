@@ -26,41 +26,38 @@ void setup() {
 void loop() {
   car.process();
   _strip->clear();
-  if (ticker == 0 ) {
-    _strip->setBrightness(30);
-  }
-
+  _strip->setBrightness(30);
   bool changedLeft = false;
   bool changedRight = false;
   _strip->clear();
   if (car.blindSpotLeft) {
     changedLeft = true;
-    setBlindSpot(0, NUMPIXELS/2);
+    setBlindSpot(NUMPIXELS/2, NUMPIXELS);
   }
   if (car.blindSpotRight) {
     changedRight = true;
-    setBlindSpot(NUMPIXELS/2, NUMPIXELS);
+    setBlindSpot(NUMPIXELS/2 + 1, 0);
   }
   if (car.turningLeftLight) {
     changedLeft = true;
-    setBlink(0, NUMPIXELS/2 - ticker, car.blindSpotLeft);
+    setBlink(NUMPIXELS/2, NUMPIXELS/2 + ticker, car.blindSpotLeft);
   }
   if (car.turningRightLight) {
     changedRight = true;
-    setBlink(NUMPIXELS/2, NUMPIXELS/2 + ticker, car.blindSpotRight);
+    setBlink(NUMPIXELS/2, NUMPIXELS/2 - ticker, car.blindSpotRight);
   }
   if (!changedLeft) {
-    if (car.handsOnRequired || car.handsOnAlert || car.handsOnWarning) {
-      setAutopilotWarn(0, NUMPIXELS/2, ticker);
-    } else {
-      setDefault(0, NUMPIXELS/2);
-    }
-  }
-  if (!changedRight) {
     if (car.handsOnRequired || car.handsOnAlert || car.handsOnWarning) {
       setAutopilotWarn(NUMPIXELS/2, NUMPIXELS, ticker);
     } else {
       setDefault(NUMPIXELS/2, NUMPIXELS);
+    }
+  }
+  if (!changedRight) {
+    if (car.handsOnRequired || car.handsOnAlert || car.handsOnWarning) {
+      setAutopilotWarn(NUMPIXELS/2, 0, ticker);
+    } else {
+      setDefault(NUMPIXELS/2, 0);
     }
   }
   ticker++;
@@ -72,8 +69,14 @@ void loop() {
 }
 
 void setBlindSpot(int start, int end) {
-  for(int i=start; i<end; i++) {
-    _strip->setPixelColor(i, Adafruit_NeoPixel::Color(150, 150, 0));
+  if (start > end) {
+    for(int i=start; i>end; i--) {
+      _strip->setPixelColor(i, Adafruit_NeoPixel::Color(150, 150, 0));
+    }
+  } else {
+    for(int i=start; i<end; i++) {
+      _strip->setPixelColor(i, Adafruit_NeoPixel::Color(150, 150, 0));
+    }
   }
 }
 
@@ -86,19 +89,37 @@ void setBlink(int start, int end, bool blindSpot) {
     red = 150;
   }
   
-  for(int i=start; i<end; i++) {
-    _strip->setPixelColor(i, Adafruit_NeoPixel::Color(red, green, blue));
+  if (start > end) {
+    for(int i=start; i>end; i--) {
+      _strip->setPixelColor(i - 1, Adafruit_NeoPixel::Color(red, green, blue));
+    }
+  } else {
+    for(int i=start; i<end; i++) {
+      _strip->setPixelColor(i, Adafruit_NeoPixel::Color(red, green, blue));
+    }
   }
 }
 
 void setAutopilotWarn(int start, int end, int ticker) {
-  for(int i=start; i<end; i++) {
-    _strip->setPixelColor(i, Adafruit_NeoPixel::Color(0,0,ticker));
+  if (start > end) {
+    for(int i=start; i>end; i--) {
+      _strip->setPixelColor(i - 1, Adafruit_NeoPixel::Color(0,0,ticker));
+    }
+  } else {
+    for(int i=start; i<end; i++) {
+      _strip->setPixelColor(i, Adafruit_NeoPixel::Color(0,0,ticker));
+    }
   }
 }
 
 void setDefault(int start, int end) {
+  if (start > end) {
+    for(int i=start; i>end; i--) {
+      _strip->setPixelColor(i - 1, Adafruit_NeoPixel::Color(0,0,150));
+    }
+  } else {
     for(int i=start; i<end; i++) {
-    _strip->setPixelColor(i, Adafruit_NeoPixel::Color(0,0,150));
+      _strip->setPixelColor(i, Adafruit_NeoPixel::Color(0,0,150));
+    }
   }
 }
