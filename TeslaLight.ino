@@ -4,6 +4,14 @@
 #define LEDPIN    12
 #define NUMPIXELS 154
 
+uint8_t leftStart = (NUMPIXELS / 8) * 7;
+uint8_t leftEnd = NUMPIXELS;
+
+uint8_t rightStart = NUMPIXELS / 8;
+uint8_t rightEnd = 0;
+
+uint8_t tickerSpeed = NUMPIXELS / 2;
+
 const int vCanPin = 5;
 const int cCanPin = 21;
 
@@ -20,46 +28,32 @@ void setup() {
   _strip = new Adafruit_NeoPixel(NUMPIXELS, LEDPIN, NEO_GRB + NEO_KHZ800);
   _strip->begin();
   _strip->clear();
-  _strip->setBrightness(40);
+  _strip->setBrightness(30);
 }
 
 void loop() {
   car.process();
   _strip->clear();
   _strip->setBrightness(30);
-  bool changedLeft = false;
-  bool changedRight = false;
   _strip->clear();
+  if (car.handsOnRequired || car.handsOnAlert || car.handsOnWarning) {
+    setAutopilotWarn(0, NUMPIXELS, ticker);
+  } else {
+    setDefault(0, NUMPIXELS);
+  }
   if (car.blindSpotLeft) {
-    changedLeft = true;
-    setBlindSpot(NUMPIXELS/2, NUMPIXELS);
+    setBlindSpot(leftStart, leftEnd);
   }
   if (car.blindSpotRight) {
-    changedRight = true;
-    setBlindSpot(NUMPIXELS/2 + 1, 0);
+    setBlindSpot(rightStart, rightEnd);
   }
   if (car.turningLeftLight) {
-    changedLeft = true;
-    setBlink(NUMPIXELS/2, NUMPIXELS/2 + ticker, car.blindSpotLeft);
+    setBlink(leftStart, leftStart + (ticker % tickerSpeed), car.blindSpotLeft);
   }
   if (car.turningRightLight) {
-    changedRight = true;
-    setBlink(NUMPIXELS/2, NUMPIXELS/2 - ticker, car.blindSpotRight);
+    setBlink(rightStart, rightStart - (ticker % tickerSpeed), car.blindSpotRight);
   }
-  if (!changedLeft) {
-    if (car.handsOnRequired || car.handsOnAlert || car.handsOnWarning) {
-      setAutopilotWarn(NUMPIXELS/2, NUMPIXELS, ticker);
-    } else {
-      setDefault(NUMPIXELS/2, NUMPIXELS);
-    }
-  }
-  if (!changedRight) {
-    if (car.handsOnRequired || car.handsOnAlert || car.handsOnWarning) {
-      setAutopilotWarn(NUMPIXELS/2, 0, ticker);
-    } else {
-      setDefault(NUMPIXELS/2, 0);
-    }
-  }
+
   ticker++;
   if (ticker == NUMPIXELS) {
     ticker = 0;
@@ -71,7 +65,7 @@ void loop() {
 void setBlindSpot(int start, int end) {
   if (start > end) {
     for(int i=start; i>end; i--) {
-      _strip->setPixelColor(i, Adafruit_NeoPixel::Color(150, 150, 0));
+      _strip->setPixelColor(i - 1, Adafruit_NeoPixel::Color(150, 150, 0));
     }
   } else {
     for(int i=start; i<end; i++) {
