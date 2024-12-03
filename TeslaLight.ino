@@ -5,7 +5,7 @@
 #define NUMPIXELS 154
 
 const int vCanPin = 5;
-const int cCanPin = 13;
+const int cCanPin = 21;
 
 int ticker = 0;
 

@@ -73,39 +73,6 @@ void Car::_processLights(unsigned char len, unsigned char data[]) {
   }
 }
 
-void Car::_printMessage(unsigned char len, unsigned char data[], bool out) {
-  char msgString[128];
-  for (byte i = 0; i < len; i++) {
-    sprintf(msgString, " 0x%.2X", data[i]);
-    Serial.print(msgString);
-  }
-  if (out) {
-    Serial.print(" OUT");
-  }
-  Serial.println();
-}
-
-void Car::_monitor(long unsigned int rxId, unsigned char len, unsigned char rxBuf[]) {
-  Serial.write(0x55);
-  Serial.write(0x55);
-  Serial.write(0x55);
-  Serial.write(0x55);
-  Serial.write(0x55);
-  Serial.write(0x55);
-  Serial.write(0x55);
-  Serial.write(0x55);
-  byte buf[4];
-  buf[0] = rxId & 255;
-  buf[1] = (rxId >> 8) & 255;
-  buf[2] = (rxId >> 16) & 255;
-  buf[3] = (rxId >> 24) & 255;
-
-  Serial.write(buf, sizeof(buf));
-  Serial.write(len);
-  for (byte i = 0; i < len; i++)
-    Serial.write(rxBuf[i]);
-}
-
 void Car::_processRightDoors(unsigned char len, unsigned char data[]) {
   doorOpen[0] = data[0] & 0x01;
   doorOpen[2] = data[0] & 0x10;
