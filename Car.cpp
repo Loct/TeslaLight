@@ -50,22 +50,6 @@ void Car::_processLights(unsigned char len, unsigned char data[]) {
   turningRight = (data[0] & 0x04) == 0x04;
   turningLeftLight = (data[0] & 0x02) == 0x02;
   turningLeft = (data[0] & 0x01) == 0x01;
-
-  if (data[2] == 0x00) {
-    brightness = 0;
-    displayOn = false;
-  } else {
-    displayOn = true;
-    byte v = data[2];
-    if (v == 0x0B)
-      brightness = 0;
-    else {
-      brightness = map(v, 0x0B, 0xC8, 0, 0xFF);
-      if (brightness < 34)
-        brightness = 34;
-      brightness = map(brightness, 34, 0xFF, 0x05, 0xFF);
-    }
-  }
 }
 
 void Car::_processRightDoors(unsigned char len, unsigned char data[]) {
@@ -86,18 +70,6 @@ void Car::_processGear(unsigned char len, unsigned char data[]) {
     gear = (Gear)GEAR_UNKNOWN;
 }
 
-void Car::_processVehicleStatus(unsigned char len, unsigned char data[]) {
-  if ((data[0] & 0x07) != 0)
-    return;
-  frunkOpen = ((data[0] >> 3) & 0x0F) != 2;
-}
-
-
-void Car::_processVehicleControl(unsigned char len, unsigned char data[]) {
-  for (byte i = 0; i < len; i++)
-    _vehicleControlFrame[i] = data[i];
-}
-
 void Car::process() {
   if (_v_enabled && _VCAN->checkReceive()) {
     long unsigned int rxId;
@@ -110,8 +82,6 @@ void Car::process() {
       _processRightDoors(len, rxBuf);
     } else if (rxId == 0x102) {
       _processLeftDoors(len, rxBuf);
-    } else if (rxId == 0x2E1) {
-      _processVehicleStatus(len, rxBuf);
     } else if (rxId == 0x118) {
        _processGear(len, rxBuf);
     }
@@ -125,8 +95,6 @@ void Car::process() {
 
     if (rxId == 0x399) {
       _processAutopilot(len, rxBuf);
-    } else if (rxId == 0x273) {
-      _processVehicleControl(len, rxBuf);
     }
   }
 }

@@ -6,8 +6,8 @@
 
 uint8_t leftStart = (NUMPIXELS / 2);
 uint8_t leftEnd = NUMPIXELS;
-uint8_t rightStart = NUMPIXELS / 2;
-uint8_t rightEnd = 0;
+uint8_t rightEnd = NUMPIXELS / 2;
+uint8_t rightStart = 0;
 const int vCanPin = 5;
 const int cCanPin = 21;
 uint8_t ticker = 0;
@@ -16,7 +16,6 @@ Adafruit_NeoPixel* _strip;
 
 void setup() {
   car.init(vCanPin, cCanPin);
-
   _strip = new Adafruit_NeoPixel(NUMPIXELS, LEDPIN, NEO_GRB + NEO_KHZ800);
   _strip->begin();
 }
@@ -25,7 +24,6 @@ void loop() {
   car.process();
   _strip->clear();
   _strip->setBrightness(30);
-  _strip->clear();
 
   if (car.gear == GEAR_PARK || car.gear == GEAR_NEUTRAL) {
     setStrip(0, NUMPIXELS, 0, 0, 0);
@@ -83,25 +81,13 @@ void loop() {
 }
 
 void setAutopilotWarn(int start, int end, int ticker) {
-  if (start > end) {
-    for(int i=start; i>end; i--) {
-      _strip->setPixelColor(i - 1, Adafruit_NeoPixel::Color(0,0,ticker));
-    }
-  } else {
-    for(int i=start; i<end; i++) {
-      _strip->setPixelColor(i, Adafruit_NeoPixel::Color(0,0,ticker));
-    }
+  for(int i=start; i<end; i++) {
+    _strip->setPixelColor(i, Adafruit_NeoPixel::Color(0,0,ticker));
   }
 }
 
 void setStrip(int start, int end, uint8_t r, uint8_t g, uint8_t b) {
-  if (start > end) {
-    for(int i=start; i>end; i--) {
-      _strip->setPixelColor(i - 1, Adafruit_NeoPixel::Color(r,g,b));
-    }
-  } else {
-    for(int i=start; i<end; i++) {
-      _strip->setPixelColor(i, Adafruit_NeoPixel::Color(r,g,b));
-    }
+  for(int i=start; i<end; i++) {
+    _strip->setPixelColor(i, Adafruit_NeoPixel::Color(r,g,b));
   }
 }
