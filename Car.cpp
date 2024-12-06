@@ -15,10 +15,7 @@ void Car::init(byte v_pin, byte c_pin) {
     _CCAN->init_Filt(1, 0, 0x03990000);
     _CCAN->setMode(MCP_NORMAL);
     _c_enabled = true;
-    Serial.println("Chassis CAN BUS OK");
-  } else
-    Serial.println("Error Initializing Cassis CAN bus...");
-
+  }
   if (_VCAN->begin(MCP_STDEXT, CAN_500KBPS, MCP_8MHZ) == CAN_OK) {
     _v_enabled = true;
     _VCAN->init_Mask(0, 0, 0x07FF0000);
@@ -29,9 +26,7 @@ void Car::init(byte v_pin, byte c_pin) {
     _VCAN->init_Filt(3, 0, 0x02E10000);
     _VCAN->init_Filt(4, 0, 0x01180000);
     _VCAN->setMode(MCP_NORMAL);
-    Serial.println("Vehicle CAN BUS OK");
-  } else
-    Serial.println("Error Initializing Vehicle CAN bus...");
+  }
 }
 
 void Car::_processAutopilot(unsigned char len, unsigned char data[]) {
