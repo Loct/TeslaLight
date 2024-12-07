@@ -143,6 +143,8 @@ void setupConnection() {
   if (connected) {
     return;
   }
+  configTzTime(MYTZ, "time.google.com", "time.windows.com", "pool.ntp.org");
+  client.setCACert(telegram_cert);
   // Set the Telegram bot properies
   myBot.setUpdateTime(2000);
   myBot.setTelegramToken(token);
