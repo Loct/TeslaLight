@@ -13,7 +13,7 @@ void Car::init(byte v_pin, byte c_pin) {
     _CCAN->init_Mask(0, 0, 0x07FF0000);
     _CCAN->init_Filt(0, 0, 0x02730000);
     _CCAN->init_Filt(1, 0, 0x03990000);
-    _CCAN->setMode(MCP_NORMAL);
+    _CCAN->setMode(MCP_LISTENONLY);
     _c_enabled = true;
   }
   if (_VCAN->begin(MCP_STDEXT, CAN_500KBPS, MCP_8MHZ) == CAN_OK) {
@@ -25,7 +25,7 @@ void Car::init(byte v_pin, byte c_pin) {
     _VCAN->init_Filt(2, 0, 0x01030000);
     _VCAN->init_Filt(3, 0, 0x02E10000);
     _VCAN->init_Filt(4, 0, 0x01180000);
-    _VCAN->setMode(MCP_NORMAL);
+    _VCAN->setMode(MCP_LISTENONLY);
   }
 }
 
