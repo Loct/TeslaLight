@@ -13,12 +13,12 @@
 WiFiClientSecure client;
 AsyncTelegram2 myBot(client);
 
-const char* ssid = "iPhone Loc";     // REPLACE mySSID WITH YOUR WIFI SSID
-const char* pass = "jajajaja";     // REPLACE myPassword YOUR WIFI PASSWORD, IF ANY
+const char* ssid = "";     // REPLACE mySSID WITH YOUR WIFI SSID
+const char* pass = "";     // REPLACE myPassword YOUR WIFI PASSWORD, IF ANY
 //const char* token = "xxxxxxxxxxxxxx"; 
-const char* token = "7606892401:AAFsTpzqW6k6KMxMGv795SgG9AiZclTr_QM";     // REPLACE myToken WITH YOUR TELEGRAM BOT TOKEN
+const char* token = "";     // REPLACE myToken WITH YOUR TELEGRAM BOT TOKEN
   // REPLACE myToken WITH YOUR TELEGRAM BOT TOKEN
-int64_t chat_id = 324153476;       // You can discover your own chat id, with "Json Dump Bot"
+int64_t chat_id = 0;       // You can discover your own chat id, with "Json Dump Bot"
 
 #define CANCEL  "CANCEL"
 #define CONFIRM "FLASH_FW"
